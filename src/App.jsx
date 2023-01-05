@@ -1,16 +1,28 @@
 import logo from "./logo.svg";
 import "./App.css";
 import papaparse from "papaparse";
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 function App() {
+  const [cars, setCars] = useState([]); //The state methods
+  function prepareJsonData(data) {
+    const json = data.map((line, index) => {
+      if (index > 0) {
+        let obj = {};
+        data[0].forEach((el, j) => (obj = { ...obj, [el]: line[j] }));
+        return obj;
+      }
+    });
+    json.shift();
+    setCars(json); //The state methods
+  }
   useEffect(() => {
     fetch(
       "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqCVdCvlZZLVilBghe7J3gbkM_iWj-CvmIlg7EMoHnIna0qtD8hN6PpLH6WWL5vv868M-oeHdEz_xp/pub?output=csv"
     )
       .then((response) => response.text())
       .then((data) => papaparse.parse(data))
-      .then((data) => console.log(data));
+      .then((data) => prepareJsonData(data));
   }, []);
   return (
     <div className="App">
