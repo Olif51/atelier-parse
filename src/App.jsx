@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 
 function App() {
   const [cars, setCars] = useState([]); //The state methods
-  function prepareJsonData(data) {
+  const prepareJsonData = (data) => {
     const json = data.map((line, index) => {
       if (index > 0) {
         let obj = {};
@@ -15,15 +15,16 @@ function App() {
     });
     json.shift();
     setCars(json); //The state methods
-  }
+  };
   useEffect(() => {
     fetch(
       "https://docs.google.com/spreadsheets/d/e/2PACX-1vRqCVdCvlZZLVilBghe7J3gbkM_iWj-CvmIlg7EMoHnIna0qtD8hN6PpLH6WWL5vv868M-oeHdEz_xp/pub?output=csv"
     )
       .then((response) => response.text())
       .then((data) => papaparse.parse(data))
-      .then((data) => prepareJsonData(data));
+      .then(({ data }) => prepareJsonData(data));
   }, []);
+  cars.map((car) => console.log(car));
   return (
     <div className="App">
       <header className="App-header">
